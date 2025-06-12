@@ -1,0 +1,34 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha Solutions</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Alpha Solutions</h1>
+    </header>
+
+    <main>
+        <p>Your trusted partner in AI-driven solutions.</p>
+    </main>
+    {% csrf_token %}
+    <div id="chat-container">
+        <div id="chat-box"></div>
+        <button id="chat-icon">💬</button>
+        <div id="chat-input-container" class="hidden">
+            <input type="text" id="user-input" placeholder="Ask something...">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+    <script>
+        const askUrl = "{% url 'ask' %}"
+    </script>
+    <script src="{% static 'js/script.js' %}">
+    </script>
+</body>
+</html>
