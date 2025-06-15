@@ -13,13 +13,24 @@ function getCookie(name) {
         return cookieValue;
     }
 const csrftoken = getCookie('csrftoken');
+// Show modal on chat icon click
+document.getElementById('chat-icon').onclick = function() {
+    document.getElementById('chat-modal').style.display = 'flex';
+};
 
-document.getElementById("chat-icon").addEventListener("click", function () {
-    document.getElementById("chat-input-container").classList.toggle("hidden");
-});
+// Hide modal on close button click or outside click
+document.getElementById('close-chat').onclick = function() {
+    document.getElementById('chat-modal').style.display = 'none';
+};
+window.onclick = function(event) {
+    const modal = document.getElementById('chat-modal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+};
 
 document.getElementById("send-btn").addEventListener("click", function () {
-    const userInput = document.getElementById("user-input").value.trim();
+    const userInput = document.getElementById("chat-input").value.trim();
     if (userInput === "") return;
 
     const chatBox = document.getElementById("chat-box");
@@ -37,5 +48,5 @@ document.getElementById("send-btn").addEventListener("click", function () {
     })
     .catch(error => console.error("Error:", error));
 
-    document.getElementById("user-input").value = "";
+    document.getElementById("chat-input").value = "";
 });

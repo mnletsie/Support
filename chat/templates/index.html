@@ -17,14 +17,27 @@
         <p>Your trusted partner in AI-driven solutions.</p>
     </main>
     {% csrf_token %}
-    <div id="chat-container">
-        <div id="chat-box"></div>
-        <button id="chat-icon">💬</button>
-        <div id="chat-input-container" class="hidden">
-            <input type="text" id="user-input" placeholder="Ask something...">
+    <!-- Chat Icon Button -->
+<button id="chat-icon" style="position: fixed; bottom: 30px; right: 30px; background: #4f8cff; border: none; border-radius: 50%; width: 60px; height: 60px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); cursor: pointer; z-index: 1001;">
+    <span style="font-size: 2rem; color: #fff;">💬</span>
+</button>
+
+<!-- Chat Modal -->
+<div id="chat-modal" class="chat-modal">
+    <div class="chat-container">
+        <div class="chat-header">
+            <span>Support Chat</span>
+            <button id="close-chat" class="close-btn">&times;</button>
+        </div>
+        <div class="chat-box" id="chat-box">
+            <!-- Messages go here -->
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Type your message..." />
             <button id="send-btn">Send</button>
         </div>
     </div>
+</div>
     <script>
         const askUrl = "{% url 'ask' %}"
     </script>
