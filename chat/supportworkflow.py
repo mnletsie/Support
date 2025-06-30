@@ -3,11 +3,13 @@ from langgraph.graph import StateGraph, END
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
-from langchain_core.runnables.graph import MermaidDrawMethod
+
 from dotenv import load_dotenv
 import os
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
 
-# Create your views here.
 
 load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.getenv('OPENAI_API_KEY')
@@ -17,6 +19,7 @@ class State(TypedDict):
     category: str
     sentiment: str
     response: str
+    context: str
 
 def categorize(state: State) -> State:
     """Categorize the customer query into Technical, Billing, or General."""
@@ -41,28 +44,31 @@ def analyze_sentiment(state: State) -> State:
 def handle_technical(state: State) -> State:
     """Provide a technical support response to the query."""
     prompt = ChatPromptTemplate.from_template(
+        "Business context:{context}"
         "Provide a technical support response to the following query: {query}"
     )
     chain = prompt | ChatOpenAI(temperature=0)
-    response = chain.invoke({"query": state["query"]}).content
+    response = chain.invoke({"query": state["query"], "context": state["context"]}).content
     return {"response": response}
 
 def handle_billing(state: State) -> State:
     """Provide a billing support response to the query."""
     prompt = ChatPromptTemplate.from_template(
+        "Business context:{context}"
         "Provide a billing support response to the following query: {query}"
     )
     chain = prompt | ChatOpenAI(temperature=0)
-    response = chain.invoke({"query": state["query"]}).content
+    response = chain.invoke({"query": state["query"], "context": state["context"]}).content
     return {"response": response}
 
 def handle_general(state: State) -> State:
     """Provide a general support response to the query."""
     prompt = ChatPromptTemplate.from_template(
+        "Business context:{context}"
         "Provide a general support response to the following query: {query}"
     )
     chain = prompt | ChatOpenAI(temperature=0)
-    response = chain.invoke({"query": state["query"]}).content
+    response = chain.invoke({"query": state["query"], "context": state["context"]}).content
     return {"response": response}
 
 def escalate(state: State) -> State:
@@ -113,6 +119,26 @@ workflow.set_entry_point("categorize")
 
 # Compile the graph
 app = workflow.compile()
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+context_path = os.path.join(BASE_DIR, "business_context.txt")
+def load_business_context():
+    with open(context_path, "r", encoding="utf-8") as f:
+        text = f.read()
+    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+    docs = splitter.create_documents([text])
+    return docs
+
+def get_vectorstore():
+    docs = load_business_context()
+    embeddings = OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY"))
+    vectorstore = Chroma.from_documents(docs, embeddings, persist_directory="./chroma_store")
+    return vectorstore
+
+vectorstore = get_vectorstore()
+
+def retrieve_context(query: str, k: int = 3) -> str:
+    results = vectorstore.similarity_search(query, k=k)
+    return "\n".join([doc.page_content for doc in results])
 
 def run_customer_support(query: str) -> Dict[str, str]:
     """Process a customer query through the LangGraph workflow.
@@ -123,8 +149,8 @@ def run_customer_support(query: str) -> Dict[str, str]:
     Returns:
         Dict[str, str]: A dictionary containing the query's category, sentiment, and response
     """
-    
-    results = app.invoke({"query": query})
+    context = retrieve_context(query)
+    results = app.invoke({"query": query, "context": context})
     response = {
         "category": results["category"],
         "sentiment": results["sentiment"],

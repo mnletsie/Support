@@ -1,0 +1,22 @@
+--- Page 1 ---
+Alpha Solutions is a leading provider of IT services in Johannesburg, South Africa. 
+Our mission is to empower businesses with reliable technology solutions. 
+We offer a wide range of services including network setup, cybersecurity, cloud migration, and IT consulting. 
+Our team of certified professionals is dedicated to delivering exceptional customer service and technical expertise.
+
+--- Page 2 ---
+Our office is located at 123 Main Street, Johannesburg. 
+We are open Monday to Friday from 8am to 6pm, and Saturdays from 9am to 1pm. 
+Customers can reach us at 011-123-4567 or via email at support@alphasolutions.co.za. 
+We also provide on-site support and remote troubleshooting for urgent issues.
+
+--- Page 3 ---
+Alpha Solutions partners with leading technology vendors such as Microsoft, Cisco, and Dell. 
+We provide managed IT services, including proactive monitoring, regular maintenance, and disaster recovery planning. 
+Our billing department ensures transparent invoicing and flexible payment options for all clients.
+
+--- Page 4 ---
+Customer satisfaction is our top priority. 
+We regularly collect feedback to improve our services. 
+Our support team is trained to handle technical, billing, and general inquiries efficiently. 
+For escalations, we have a dedicated account manager for each client to ensure prompt resolution of complex issues.
